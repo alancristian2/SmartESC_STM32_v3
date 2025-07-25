@@ -1,8 +1,8 @@
-#include "config.h"         // Para constantes y definiciones
+#include "config.h"
 #include "motor.h"
 #include "motor_param.h"
 #include "print.h"
-#include <stdbool.h>        // Para tipo bool
+#include <stdbool.h>
 
 static int motor_initialized = 0;
 
@@ -16,7 +16,6 @@ void motor_init(MotorStatePublic_t *motor) {
         motor->phase_inductance = motorParams.phase_inductance;
         motor->flux_linkage = motorParams.flux_linkage;
     } else {
-        // Parámetros por defecto si autodetección no está desactivada
         motor->pole_pairs = POLE_PAIRS;
         motor->bemf_constant = BEMF_CONSTANT;
         motor->phase_resistance = 0.110f;
@@ -27,7 +26,7 @@ void motor_init(MotorStatePublic_t *motor) {
     motor->speed = 0;
     motor->i_q_setpoint_target = 0;
     motor->brake_active = false;
-    motor->mode = 1; // modo normal
+    motor->mode = 1;
     motor->speed_limit = SPEEDLIMIT_NORMAL;
     motor->phase_current_limit = PH_CURRENT_MAX_NORMAL;
     motor->field_weakening_current_max = FIELD_WEAKNING_CURRENT_MAX;
@@ -41,20 +40,14 @@ void motor_init(MotorStatePublic_t *motor) {
 }
 
 void motor_disable_pwm(void) {
-    // TODO: Implementar apagar señales PWM para detener motor
-    // Ejemplo:
-    // HAL_TIM_PWM_Stop(&htimX, TIM_CHANNEL_Y);
+    // TODO: implementar parada de PWM
 }
 
 void motor_slow_loop(MotorStatePublic_t *motor) {
-    // Control periódico a 10ms
-
-    // Si velocidad supera el límite, cortar torque
-    if (motor->speed > motor->speed_limit * 1000) { // Ajustar escala si necesario
+    if (motor->speed > motor->speed_limit * 1000) {
         motor->i_q_setpoint_target = 0;
     }
 
-    // Ajuste corriente máxima según modo
     switch (motor->mode) {
         case 0:
             motor->phase_current_limit = PH_CURRENT_MAX_ECO;
@@ -70,10 +63,9 @@ void motor_slow_loop(MotorStatePublic_t *motor) {
             break;
     }
 
-    // Aquí debería ir el control FOC real y demás lógicas
+    // Aquí va el control FOC real
 }
 
 void motor_auto_detect(MotorStatePublic_t *motor) {
-    // Función deshabilitada intencionalmente
-    // Parámetros fijos usados siempre
+    // Autodetección desactivada
 }
