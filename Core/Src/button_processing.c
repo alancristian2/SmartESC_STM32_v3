@@ -119,8 +119,6 @@ void checkButton(M365State_t *p_M365State) {
       case VERY_LONG_PRESS:
         p_M365State->mode &= ~(1 << 4); // clear "off" bit
         p_M365State->shutdown = 0;
-        motor_auto_detect(&motor); // si tienes una variable 'motor' en el contexto
-
         break;
 
       case LONG_PRESS:
