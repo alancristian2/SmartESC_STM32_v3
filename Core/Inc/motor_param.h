@@ -1,10 +1,9 @@
 #ifndef MOTOR_PARAM_H
 #define MOTOR_PARAM_H
 
-#include <stdint.h>   // para uint8_t, uint32_t y demás
-// resto de includes y definiciones
-
+#include <stdint.h>
 #include "config.h"
+#include "motor.h"   // Necesario para usar MotorStatePublic_t
 
 typedef struct {
     int pole_pairs;
@@ -30,6 +29,7 @@ typedef struct {
 extern MotorParams_t motorParams;
 extern const uint8_t hall_table[8];
 
+// Carga parámetros fijos en la estructura del motor
 void motor_load_default_params(MotorStatePublic_t *motor);
 
 #endif
