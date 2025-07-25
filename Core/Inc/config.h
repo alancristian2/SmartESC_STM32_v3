@@ -13,7 +13,7 @@
 // Límites de velocidad para modos (en km/h)
 #define SPEEDLIMIT_ECO           6
 #define SPEEDLIMIT_NORMAL        20
-#define SPEEDLIMIT_SPORT         56
+#define SPEEDLIMIT_SPORT         55
 
 // Límites de corriente motor para modos (mA)
 #define PH_CURRENT_MAX_ECO       10000
