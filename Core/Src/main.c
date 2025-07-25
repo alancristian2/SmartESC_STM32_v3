@@ -232,7 +232,7 @@ int main(void) {
   MSPublic.field_weakening_current_max = FIELD_WEAKNING_CURRENT_MAX;
   MSPublic.battery_voltage_min = BATTERYVOLTAGE_MIN;
 
-  motor_load_default_params(&MSPublic);
+  // motor_load_default_params(&MSPublic);
   motor_init(&MSPublic);
 
   M365State.phase_current_limit = PH_CURRENT_MAX_NORMAL;
