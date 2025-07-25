@@ -41,6 +41,7 @@ MotorParams_t motorParams = {
 
     .disable_auto_detect = 1, // desactivada autodetección
 
+    // Halls: diente y medio separados, sensor central invertido
     .hall_offset_1 = 60,
     .hall_offset_2 = 150,
     .hall_invert_c = 1,
@@ -69,9 +70,6 @@ void UserSysTickHandler(void) {
   }
 }
 
-/**
- * Enable DMA controller clock
- */
 static void DMA_Init(void) {
   __HAL_RCC_DMA1_CLK_ENABLE();
 
@@ -85,10 +83,6 @@ static void DMA_Init(void) {
   HAL_NVIC_EnableIRQ(DMA1_Channel5_IRQn);
 }
 
-/**
- * @brief System Clock Configuration
- * @retval None
- */
 void SystemClock_Config(void) {
   RCC_OscInitTypeDef RCC_OscInitStruct;
   RCC_ClkInitTypeDef RCC_ClkInitStruct;
@@ -126,11 +120,6 @@ void SystemClock_Config(void) {
   HAL_NVIC_SetPriority(SysTick_IRQn, 2, 0);
 }
 
-/**
- * @brief USART1 Initialization Function
- * @param None
- * @retval None
- */
 static void USART1_UART_Init(void) {
   huart1.Instance = USART1;
   huart1.Init.BaudRate = 115200;
@@ -145,11 +134,6 @@ static void USART1_UART_Init(void) {
   }
 }
 
-/**
- * @brief USART3 Initialization Function
- * @param None
- * @retval None
- */
 static void USART3_UART_Init(void) {
   huart3.Instance = USART3;
   huart3.Init.BaudRate = 115200;
@@ -164,11 +148,6 @@ static void USART3_UART_Init(void) {
   }
 }
 
-/**
- * @brief GPIO Initialization Function
- * @param None
- * @retval None
- */
 static void GPIO_Init(void) {
   GPIO_InitTypeDef GPIO_InitStruct = { 0 };
 
@@ -177,13 +156,11 @@ static void GPIO_Init(void) {
   __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOD_CLK_ENABLE();
 
-  // PWR_BTN (input)
   GPIO_InitStruct.Pin = PWR_BTN_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(PWR_BTN_GPIO_Port, &GPIO_InitStruct);
 
-  // TPS_ENA (output set)
   HAL_GPIO_WritePin(TPS_ENA_GPIO_Port, TPS_ENA_Pin, GPIO_PIN_SET);
   GPIO_InitStruct.Pin = TPS_ENA_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
@@ -191,7 +168,6 @@ static void GPIO_Init(void) {
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(TPS_ENA_GPIO_Port, &GPIO_InitStruct);
 
-  // LED (output reset)
   HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
   GPIO_InitStruct.Pin = LED_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
@@ -199,20 +175,17 @@ static void GPIO_Init(void) {
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LED_GPIO_Port, &GPIO_InitStruct);
 
-  // UART1 Tx (PB6) - AF push-pull
   GPIO_InitStruct.Pin = GPIO_PIN_6;
   GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  // UART1 Rx (PB7) - input
   GPIO_InitStruct.Pin = GPIO_PIN_7;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  // BrakeLight (PA15) Open Drain output
   HAL_GPIO_WritePin(BrakeLight_GPIO_Port, BrakeLight_Pin, GPIO_PIN_RESET);
   GPIO_InitStruct.Pin = BrakeLight_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
@@ -221,13 +194,9 @@ static void GPIO_Init(void) {
   HAL_GPIO_Init(BrakeLight_GPIO_Port, &GPIO_InitStruct);
 }
 
-void HAL_UART_TxCpltCallback(UART_HandleTypeDef *UartHandle) {
-  // En modo full duplex no hace falta habilitar receptor manualmente
-}
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *UartHandle) {}
 
-void HAL_UART_ErrorCallback(UART_HandleTypeDef *UartHandle) {
-  // Puedes añadir manejo de error
-}
+void HAL_UART_ErrorCallback(UART_HandleTypeDef *UartHandle) {}
 
 void Error_Handler(void) {
   __disable_irq();
@@ -243,34 +212,26 @@ void _Error_Handler(char *file, int line) {
 }
 
 #ifdef  USE_FULL_ASSERT
-void assert_failed(uint8_t *file, uint32_t line) {
-  // Implementa reporte de errores si quieres
-}
+void assert_failed(uint8_t *file, uint32_t line) {}
 #endif
 
 int main(void) {
   HAL_Init();
-
   SystemClock_Config();
-
   GPIO_Init();
-
   DMA_Init();
-
   USART1_UART_Init();
   USART3_UART_Init();
 
-  MSPublic.brake_active = true; // fuerza a freno activo hasta recibir datos reales
-  MSPublic.i_q_setpoint_target = 0; // empezar con acelerador 0
-  MSPublic.speed = 128000; // valor inicial (escala interna)
+  MSPublic.brake_active = true;
+  MSPublic.i_q_setpoint_target = 0;
+  MSPublic.speed = 128000;
   MSPublic.speed_limit = SPEEDLIMIT_NORMAL;
   MSPublic.phase_current_limit = PH_CURRENT_MAX_NORMAL;
   MSPublic.field_weakening_current_max = FIELD_WEAKNING_CURRENT_MAX;
   MSPublic.battery_voltage_min = BATTERYVOLTAGE_MIN;
 
-  // Cargar parámetros motor desde motorParams
   motor_load_default_params(&MSPublic);
-
   motor_init(&MSPublic);
 
   M365State.phase_current_limit = PH_CURRENT_MAX_NORMAL;
@@ -280,7 +241,6 @@ int main(void) {
   M365Dashboard_init(huart1);
   PWR_init();
 
-  // Variables estáticas para filtrado y control
   static uint32_t systick_cnt_old = 0;
   static uint8_t debug_cnt = 0;
   static q31_t q31_batt_voltage_acc = 0;
@@ -288,7 +248,6 @@ int main(void) {
 
   while (1) {
     M365State.speed = MSPublic.speed;
-
     search_DashboardMessage(&M365State, huart1);
 
     MSPublic.phase_current_limit = M365State.phase_current_limit;
@@ -297,19 +256,16 @@ int main(void) {
 
     if ((systick_cnt_old != systick_cnt) && (systick_cnt % 20) == 0) {
       systick_cnt_old = systick_cnt;
-
       checkButton(&M365State);
 
       MSPublic.mode = M365State.mode;
       MSPublic.speed_limit = M365State.speed_limit;
 
-      // Filtrado suave lectura voltaje batería
       q31_batt_voltage_acc -= (q31_batt_voltage_acc >> 7);
       q31_batt_voltage_acc += MSPublic.adcData[ADC_VOLTAGE];
       float battery_voltage = (q31_batt_voltage_acc >> 7) * CAL_BAT_V;
       MSPublic.battery_voltage = M365State.battery_voltage = battery_voltage;
 
-      // Filtrado suave lectura corriente (asegúrate que ADC_CURRENT esté definido)
       q31_current_acc -= (q31_current_acc >> 7);
       q31_current_acc += MSPublic.adcData[ADC_CURRENT];
       float current_amps = (q31_current_acc >> 7) * CAL_I;
