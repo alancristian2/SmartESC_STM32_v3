@@ -1,6 +1,6 @@
+#include "config.h"  // para BATTERYVOLTAGE_MIN y otras definiciones
 #include "motor.h"
 #include "motor_param.h"
-#include "config.h"
 #include "print.h"
 
 static int motor_initialized = 0;
