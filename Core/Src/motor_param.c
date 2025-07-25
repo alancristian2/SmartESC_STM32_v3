@@ -1,8 +1,7 @@
 #include "motor.h"
 #include "config.h"
 
-// Parámetros característicos del motor Pro 4
-// Valores aproximados, ajustables en calibración
+// Parámetros característicos del motor Pro 4 (valores aproximados)
 
 // Resistencia de fase (Ohm)
 #define PHASE_RESISTANCE 0.135f
@@ -12,6 +11,9 @@
 
 // Enlace de flujo (Weber)
 #define FLUX_LINKAGE 0.023f
+
+// Variable para controlar la autodetección (1 = desactivar, 0 = activar)
+const int disable_auto_detect = DISABLE_AUTO_DETECT;
 
 void motor_load_default_params(MotorStatePublic_t *motor) {
     motor->pole_pairs = POLE_PAIRS;          // definido en config.h (20)
