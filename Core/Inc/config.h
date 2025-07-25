@@ -1,30 +1,31 @@
+// Control de acelerador y freno (valores ADC)
 #define THROTTLEOFFSET 45
 #define THROTTLEMAX 175
 #define BRAKEOFFSET 50
 #define BRAKEMAX 100
 
-// speed limits for invividual modes in kph
+// Límites de velocidad para modos (en km/h)
 #define SPEEDLIMIT_ECO 6
 #define SPEEDLIMIT_NORMAL 20
 #define SPEEDLIMIT_SPORT 55
 
-// motor current limits for invividual modes in mA
-// note that hacked firmware allows up to 55amps motor phase current
+// Límites de corriente motor para modos (mA)
 #define PH_CURRENT_MAX_ECO 10000
 #define PH_CURRENT_MAX_NORMAL 15000
 #define PH_CURRENT_MAX_SPORT 25000
 
-// motor current limit for regen in mA
+// Corriente máxima de frenado regenerativo (mA)
 #define REGEN_MAX_CURRENT 10000
 
-// maximum current for field weakening in mA
-#define FIELD_WEAKNING_CURRENT_MAX 0 //max id
+// Corriente máxima para debilitar campo (field weakening) (mA)
+#define FIELD_WEAKNING_CURRENT_MAX 0 // Deshabilitado
 
-// ADC channels
+// Canales ADC usados
 #define ADC_VOLTAGE 0
 #define ADC_THROTTLE 1
 #define ADC_TEMP 2
 
+// Pines GPIO
 #define LED_Pin GPIO_PIN_1
 #define LED_GPIO_Port GPIOD
 #define UART1_Tx_Pin GPIO_PIN_6
@@ -42,3 +43,19 @@
 #define TPS_ENA_Pin GPIO_PIN_15
 #define TPS_ENA_GPIO_Port GPIOC
 
+// Número de pares de polos para motor Pro 4 (40 imanes)
+#define POLE_PAIRS 20
+
+// Configuración sensores Hall (separados diente y medio, hall central invertido)
+#define HALL_SENSOR_OFFSET_1 60      // Primer sensor hall a 60°
+#define HALL_SENSOR_OFFSET_2 150     // Segundo sensor hall a 150° (60 + 90)
+#define HALL_SENSOR_INVERT_C 1       // Invertir sensor hall central (C)
+
+// Velocidad nominal máxima (RPM)
+#define MAX_RATED_SPEED 3000
+
+// Constante BEMF aproximada para motor Pro 4 (V/krpm)
+#define BEMF_CONSTANT 42.0
+
+// Desactivar autodetección parámetros motor (0 = activar, 1 = desactivar)
+#define DISABLE_AUTO_DETECT 0
