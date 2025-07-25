@@ -1,14 +1,5 @@
 // main.c
 
-#ifndef CAL_BAT_V
-#define CAL_BAT_V 0.01f
-#endif
-
-#ifndef CAL_I
-#define CAL_I 1.0f
-#endif
-
-
 #include "main.h"
 #include "config.h"
 #include "print.h"
