@@ -1,3 +1,5 @@
+// main.c
+
 #include "main.h"
 #include "config.h"
 #include "print.h"
@@ -19,38 +21,12 @@ MotorStatePublic_t MSPublic;
 
 volatile uint32_t systick_cnt = 0;
 
-// Tabla de estados para sensores Hall
-const uint8_t hall_table[8] = {
-    0, 5, 3, 6, 1, 4, 2, 0
-};
-
-// Parámetros motor Pro 4
-MotorParams_t motorParams = {
-    .pole_pairs = 20,
-    .bemf_constant = 42.0f,
-    .max_speed_rpm = 3000,
-    .disable_auto_detect = 1,
-
-    .hall_offset_1 = 60,
-    .hall_offset_2 = 150,
-    .hall_invert_c = 1,
-
-    .phase_current_max_eco = 10000,
-    .phase_current_max_normal = 15000,
-    .phase_current_max_sport = 25000,
-    .regen_max_current = 10000,
-    .field_weakening_current_max = 0,
-
-    .phase_resistance = 0.135f,
-    .phase_inductance = 0.00018f,
-    .flux_linkage = 0.023f
-};
-
-// 1ms
+// every 1ms
 void UserSysTickHandler(void) {
     static uint32_t c;
     systick_cnt++;
     c++;
+    // every 10ms
     if ((c % 10) == 0) {
         motor_slow_loop(&MSPublic);
     }
@@ -58,10 +34,13 @@ void UserSysTickHandler(void) {
 
 static void DMA_Init(void) {
     __HAL_RCC_DMA1_CLK_ENABLE();
+
     HAL_NVIC_SetPriority(DMA1_Channel3_IRQn, 3, 0);
     HAL_NVIC_EnableIRQ(DMA1_Channel3_IRQn);
+
     HAL_NVIC_SetPriority(DMA1_Channel4_IRQn, 3, 0);
     HAL_NVIC_EnableIRQ(DMA1_Channel4_IRQn);
+
     HAL_NVIC_SetPriority(DMA1_Channel5_IRQn, 3, 0);
     HAL_NVIC_EnableIRQ(DMA1_Channel5_IRQn);
 }
@@ -77,18 +56,26 @@ void SystemClock_Config(void) {
     RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
     RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI_DIV2;
     RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL16;
-    if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) Error_Handler();
+    if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
+        Error_Handler();
+    }
 
-    RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
+    RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK
+                                | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
     RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
     RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
     RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
     RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
-    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK) Error_Handler();
+
+    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK) {
+        Error_Handler();
+    }
 
     PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_ADC;
     PeriphClkInit.AdcClockSelection = RCC_ADCPCLK2_DIV6;
-    if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK) Error_Handler();
+    if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK) {
+        Error_Handler();
+    }
 
     HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq() / 1000);
     HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
@@ -104,7 +91,9 @@ static void USART1_UART_Init(void) {
     huart1.Init.Mode = UART_MODE_TX_RX;
     huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
     huart1.Init.OverSampling = UART_OVERSAMPLING_16;
-    if (HAL_UART_Init(&huart1) != HAL_OK) Error_Handler();
+    if (HAL_UART_Init(&huart1) != HAL_OK) {
+        Error_Handler();
+    }
 }
 
 static void USART3_UART_Init(void) {
@@ -116,11 +105,14 @@ static void USART3_UART_Init(void) {
     huart3.Init.Mode = UART_MODE_TX_RX;
     huart3.Init.HwFlowCtl = UART_HWCONTROL_NONE;
     huart3.Init.OverSampling = UART_OVERSAMPLING_16;
-    if (HAL_UART_Init(&huart3) != HAL_OK) Error_Handler();
+    if (HAL_UART_Init(&huart3) != HAL_OK) {
+        Error_Handler();
+    }
 }
 
 static void GPIO_Init(void) {
     GPIO_InitTypeDef GPIO_InitStruct = {0};
+
     __HAL_RCC_GPIOA_CLK_ENABLE();
     __HAL_RCC_GPIOB_CLK_ENABLE();
     __HAL_RCC_GPIOC_CLK_ENABLE();
@@ -141,20 +133,26 @@ static void GPIO_Init(void) {
     HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
     GPIO_InitStruct.Pin = LED_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
     HAL_GPIO_Init(LED_GPIO_Port, &GPIO_InitStruct);
 
     GPIO_InitStruct.Pin = GPIO_PIN_6;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
     GPIO_InitStruct.Pin = GPIO_PIN_7;
     GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
     HAL_GPIO_WritePin(BrakeLight_GPIO_Port, BrakeLight_Pin, GPIO_PIN_RESET);
     GPIO_InitStruct.Pin = BrakeLight_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
     HAL_GPIO_Init(BrakeLight_GPIO_Port, &GPIO_InitStruct);
 }
 
@@ -168,6 +166,10 @@ void Error_Handler(void) {
     }
 }
 
+#ifdef USE_FULL_ASSERT
+void assert_failed(uint8_t *file, uint32_t line) {}
+#endif
+
 int main(void) {
     HAL_Init();
     SystemClock_Config();
@@ -176,19 +178,12 @@ int main(void) {
     USART1_UART_Init();
     USART3_UART_Init();
 
-    MSPublic.brake_active = true;
-    MSPublic.i_q_setpoint_target = 0;
-    MSPublic.speed = 128000;
-    MSPublic.speed_limit = SPEEDLIMIT_NORMAL;
-    MSPublic.phase_current_limit = PH_CURRENT_MAX_NORMAL;
-    MSPublic.field_weakening_current_max = FIELD_WEAKNING_CURRENT_MAX;
-    MSPublic.battery_voltage_min = BATTERYVOLTAGE_MIN;
-
+    motor_load_default_params(&MSPublic);
     motor_init(&MSPublic);
 
-    M365State.phase_current_limit = PH_CURRENT_MAX_NORMAL;
+    M365State.phase_current_limit = motorParams.phase_current_max_normal;
     M365State.speed_limit = SPEEDLIMIT_NORMAL;
-    M365State.regen_max_current = REGEN_MAX_CURRENT;
+    M365State.regen_max_current = motorParams.regen_max_current;
 
     M365Dashboard_init(huart1);
     PWR_init();
@@ -222,7 +217,9 @@ int main(void) {
             q31_current_acc += MSPublic.adcData[ADC_CURRENT];
             float current_amps = (q31_current_acc >> 7) * CAL_I;
 
-            if (M365State.shutdown) M365State.shutdown++;
+            if (M365State.shutdown)
+                M365State.shutdown++;
+
             M365State.temperature = (MSPublic.adcData[ADC_TEMP] * 41) >> 8;
 
             if (++debug_cnt > 13) {
