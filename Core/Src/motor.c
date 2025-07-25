@@ -1,6 +1,5 @@
 #include "motor.h"
 #include "motor_param.h"
-#include "hall_sensor.h"
 #include "config.h"
 #include "print.h"
 
@@ -16,7 +15,12 @@ void motor_init(MotorStatePublic_t *motor) {
         motor->phase_inductance = motorParams.phase_inductance;
         motor->flux_linkage = motorParams.flux_linkage;
     } else {
-        // Si habilitas autodetect, implementa aquí (ahora deshabilitado)
+        // Aquí se pondría la autodetección real si estuviera habilitada
+        motor->pole_pairs = POLE_PAIRS;
+        motor->bemf_constant = BEMF_CONSTANT;
+        motor->phase_resistance = 0.110f;
+        motor->phase_inductance = 0.00015f;
+        motor->flux_linkage = 0.024f;
     }
 
     motor->speed = 0;
@@ -28,55 +32,43 @@ void motor_init(MotorStatePublic_t *motor) {
     motor->field_weakening_current_max = FIELD_WEAKNING_CURRENT_MAX;
     motor->battery_voltage_min = BATTERYVOLTAGE_MIN;
 
-    hall_sensor_init(); // Inicializa sensores Hall
-
     motor_initialized = 1;
+
     printf_("Motor inicializado con %d pares de polos y autodetección %s\n",
             motor->pole_pairs,
             motorParams.disable_auto_detect ? "desactivada" : "activada");
 }
 
 void motor_disable_pwm(void) {
-    // Apaga salidas PWM/MOSFET (según hardware)
+    // Aquí apagarías las señales PWM para detener el motor
 }
 
 void motor_slow_loop(MotorStatePublic_t *motor) {
-    // Cada 10ms - actualizar control básico
+    // Control periódico a 10ms
 
-    // Leer posición motor por sensores Hall
-    int hall_pos = hall_get_position();
-    if (hall_pos < 0) {
-        // Estado inválido - frenar o mantener
-        motor->i_q_setpoint_target = 0;
-    } else {
-        // Aquí podrías usar hall_pos para control vectorial (FOC)
-        // Por ahora solo simulamos actualización velocidad
-        motor->speed = (motor->speed + 1) % (motorParams.max_speed_rpm * 10);
-    }
-
-    // Límite de velocidad
-    if (motor->speed > motor->speed_limit * 1000) { // convertir km/h escala interna
+    if (motor->speed > motor->speed_limit * 1000) { // ajustar escala si hace falta
         motor->i_q_setpoint_target = 0;
     }
 
-    // Ajustar corriente según modo
     switch (motor->mode) {
         case 0:
-            motor->phase_current_limit = motorParams.phase_current_max_eco;
+            motor->phase_current_limit = PH_CURRENT_MAX_ECO;
             break;
         case 1:
-            motor->phase_current_limit = motorParams.phase_current_max_normal;
+            motor->phase_current_limit = PH_CURRENT_MAX_NORMAL;
             break;
         case 2:
-            motor->phase_current_limit = motorParams.phase_current_max_sport;
+            motor->phase_current_limit = PH_CURRENT_MAX_SPORT;
             break;
         default:
-            motor->phase_current_limit = motorParams.phase_current_max_normal;
+            motor->phase_current_limit = PH_CURRENT_MAX_NORMAL;
+            break;
     }
 
-    // TODO: implementar control real FOC usando hall_pos y i_q_setpoint_target
+    // TODO: aquí va el control FOC real
 }
 
 void motor_auto_detect(MotorStatePublic_t *motor) {
-    // Función deshabilitada (usamos parámetros fijos)
+    // Función deshabilitada intencionalmente
+    // Usamos parámetros fijos
 }
