@@ -38,7 +38,9 @@ BUILD_DIR = build
 ######################################
 # C sources
 C_SOURCES =  \
-Lib/EBiCS_motor_FOC/motor.c \
+Core/Src/motor.c \
+Core/Src/hall_sensor.c \
+Core/Src/motor_param.c \
 Core/Src/main.c \
 Core/Src/utils.c \
 Core/Src/eeprom.c \
@@ -64,7 +66,7 @@ Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_exti.c \
 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.c \
 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.c \
 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.c \
-Src/system_stm32f1xx.c
+Core/Src/system_stm32f1xx.c
 
 # ASM sources
 ASM_SOURCES =  \
