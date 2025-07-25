@@ -79,3 +79,8 @@
 
 // config.h o en la parte superior de motor.c si no tienes config.h
 #define BATTERYVOLTAGE_MIN 30000  // ejemplo: 30.0 V si usas milivoltios
+
+// Valores de calibración para batería y corriente (ajusta según tu hardware)
+#define CAL_BAT_V  (0.01f)   // ejemplo: factor para convertir lectura ADC a voltios
+#define CAL_I      (1.0f)    // ejemplo: factor para convertir lectura ADC a corriente en amperios
+
