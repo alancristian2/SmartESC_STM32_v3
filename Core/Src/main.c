@@ -17,6 +17,7 @@ DMA_HandleTypeDef hdma_usart3_tx;
 DMA_HandleTypeDef hdma_usart3_rx;
 
 M365State_t M365State;
+MotorStatePublic_t MSPublic;
 
 
 volatile uint32_t systick_cnt = 0;
