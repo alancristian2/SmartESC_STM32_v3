@@ -1,41 +1,36 @@
-#ifndef CONFIG_H
-#define CONFIG_H
-
-// ***** CONTROL DE ACELERADOR Y FRENO (valores ADC) *****
+// Control de acelerador y freno (valores ADC)
 #define THROTTLEOFFSET 45
 #define THROTTLEMAX 175
 #define BRAKEOFFSET 50
 #define BRAKEMAX 100
 
-// ***** LÍMITES DE VELOCIDAD PARA MODOS (km/h) *****
+// Límites de velocidad para modos (en km/h)
 #define SPEEDLIMIT_ECO 6
 #define SPEEDLIMIT_NORMAL 20
 #define SPEEDLIMIT_SPORT 55
 
-// ***** LÍMITES DE CORRIENTE DEL MOTOR (mA) *****
+// Límites de corriente motor para modos (mA)
 #define PH_CURRENT_MAX_ECO 10000
 #define PH_CURRENT_MAX_NORMAL 15000
 #define PH_CURRENT_MAX_SPORT 25000
 
-// ***** FRENADO REGENERATIVO *****
-#define REGEN_MAX_CURRENT 10000  // Corriente máxima de regeneración (mA)
+// Corriente máxima de frenado regenerativo (mA)
+#define REGEN_MAX_CURRENT 10000
 
-// ***** FIELD WEAKENING *****
-#define FIELD_WEAKNING_CURRENT_MAX 0 // 0 = deshabilitado
+// Corriente máxima para debilitar campo (field weakening) (mA)
+#define FIELD_WEAKNING_CURRENT_MAX 0 // Deshabilitado
 
-// ***** CANALES ADC *****
+// Canales ADC usados
 #define ADC_VOLTAGE 0
 #define ADC_THROTTLE 1
 #define ADC_TEMP 2
 
-// ***** PINES GPIO *****
+// Pines GPIO originales Xiaomi Pro 2
 #define LED_Pin GPIO_PIN_1
 #define LED_GPIO_Port GPIOD
 
 #define UART1_Tx_Pin GPIO_PIN_6
 #define UART1_Tx_GPIO_Port GPIOB
-#define UART1_Rx_Pin GPIO_PIN_7
-#define UART1_Rx_GPIO_Port GPIOB
 
 #define BrakeLight_Pin GPIO_PIN_15
 #define BrakeLight_GPIO_Port GPIOA
@@ -55,19 +50,29 @@
 #define TPS_ENA_Pin GPIO_PIN_15
 #define TPS_ENA_GPIO_Port GPIOC
 
-// ***** PARÁMETROS MOTOR PRO 4 *****
-#define POLE_PAIRS 20            // 40 imanes = 20 pares de polos
+// Pines Hall sensores para Xiaomi Pro 2 (STM32F103CBT6)
+#define HALL_PIN_A GPIO_PIN_4
+#define HALL_PORT_A GPIOB
 
-// Configuración de sensores Hall
-#define HALL_SENSOR_OFFSET_1 60  // Primer hall a 60°
-#define HALL_SENSOR_OFFSET_2 150 // Segundo hall a 150° (60 + 90)
-#define HALL_SENSOR_INVERT_C 1   // Hall central invertido (C)
+#define HALL_PIN_B GPIO_PIN_5
+#define HALL_PORT_B GPIOB
 
-// Velocidad nominal y BEMF
-#define MAX_RATED_SPEED 3000     // RPM máximas nominales
-#define BEMF_CONSTANT 42.0       // V/krpm para motor Pro 4
+#define HALL_PIN_C GPIO_PIN_0
+#define HALL_PORT_C GPIOB
 
-// ***** AUTODETECCIÓN *****
-#define DISABLE_AUTO_DETECT 1    // 1 = desactivar autodetección
+// Número de pares de polos para motor Pro 4 (40 imanes)
+#define POLE_PAIRS 20
 
-#endif // CONFIG_H
+// Configuración sensores Hall (separados diente y medio, hall central invertido)
+#define HALL_SENSOR_OFFSET_1 60      // Primer sensor hall a 60°
+#define HALL_SENSOR_OFFSET_2 150     // Segundo sensor hall a 150° (60 + 90)
+#define HALL_SENSOR_INVERT_C 1       // Invertir sensor hall central (C)
+
+// Velocidad nominal máxima (RPM)
+#define MAX_RATED_SPEED 3000
+
+// Constante BEMF aproximada para motor Pro 4 (V/krpm)
+#define BEMF_CONSTANT 42.0
+
+// Desactivar autodetección parámetros motor (0 = activar, 1 = desactivar)
+#define DISABLE_AUTO_DETECT 1
