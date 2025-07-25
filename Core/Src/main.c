@@ -96,7 +96,7 @@ void SystemClock_Config(void) {
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI_DIV2;
   RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL16;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
-    _Error_Handler(__FILE__, __LINE__);
+    Error_Handler();
   }
 
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK
@@ -107,13 +107,13 @@ void SystemClock_Config(void) {
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK) {
-    _Error_Handler(__FILE__, __LINE__);
+    Error_Handler();
   }
 
   PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_ADC;
   PeriphClkInit.AdcClockSelection = RCC_ADCPCLK2_DIV6;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK) {
-    _Error_Handler(__FILE__, __LINE__);
+    Error_Handler();
   }
 
   HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq() / 1000);
@@ -145,7 +145,7 @@ static void USART3_UART_Init(void) {
   huart3.Init.HwFlowCtl = UART_HWCONTROL_NONE;
   huart3.Init.OverSampling = UART_OVERSAMPLING_16;
   if (HAL_UART_Init(&huart3) != HAL_OK) {
-    _Error_Handler(__FILE__, __LINE__);
+    Error_Handler();
   }
 }
 
@@ -200,29 +200,25 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *UartHandle) {}
 void HAL_UART_ErrorCallback(UART_HandleTypeDef *UartHandle) {}
 
 void Error_Handler(void) {
-  __disable_irq();
-  while (1) {
-    motor_disable_pwm();
-  }
+    __disable_irq();
+    while (1) {
+        motor_disable_pwm();
+    }
 }
 
-void _Error_Handler(char *file, int line) {
-  while (1) {
-    motor_disable_pwm();
-  }
-}
+// Ya no necesitamos _Error_Handler(), eliminada
 
-#ifdef  USE_FULL_ASSERT
+#ifdef USE_FULL_ASSERT
 void assert_failed(uint8_t *file, uint32_t line) {}
 #endif
 
 int main(void) {
-  HAL_Init();
-  SystemClock_Config();
-  GPIO_Init();
-  DMA_Init();
-  USART1_UART_Init();
-  USART3_UART_Init();
+    HAL_Init();
+    SystemClock_Config();
+    GPIO_Init();
+    DMA_Init();
+    USART1_UART_Init();
+    USART3_UART_Init();
 
   MSPublic.brake_active = true;
   MSPublic.i_q_setpoint_target = 0;
