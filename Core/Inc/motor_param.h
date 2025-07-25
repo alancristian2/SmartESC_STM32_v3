@@ -1,6 +1,9 @@
 #ifndef MOTOR_PARAM_H
 #define MOTOR_PARAM_H
 
+#include <stdint.h>   // para uint8_t, uint32_t y demás
+// resto de includes y definiciones
+
 #include "config.h"
 
 typedef struct {
