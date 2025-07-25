@@ -1,24 +1,23 @@
 #include "motor_param.h"
 
-// Tabla estados sensores Hall (configuración típica de 3 sensores)
+// Tabla estados Hall (igual que en hall_sensor.c)
 const uint8_t hall_table[8] = {
-    0,  // 000 - no válido
+    0,  // 000 - inválido
     5,  // 001
     3,  // 010
     6,  // 011
     1,  // 100
     4,  // 101
     2,  // 110
-    0   // 111 - no válido
+    0   // 111 - inválido
 };
 
-// Parámetros motor Pro 4 (40 imanes / 20 pares polos)
 MotorParams_t motorParams = {
     .pole_pairs = 20,
     .bemf_constant = 42.0f,
     .max_speed_rpm = 3000,
 
-    .disable_auto_detect = 1, // autodetección desactivada
+    .disable_auto_detect = 1, // desactivada autodetección
 
     .hall_offset_1 = 60,
     .hall_offset_2 = 150,
@@ -34,23 +33,3 @@ MotorParams_t motorParams = {
     .phase_inductance = 0.00018f,
     .flux_linkage = 0.023f
 };
-
-// Carga parámetros fijos en MotorStatePublic_t (estructura del motor)
-void motor_load_default_params(MotorStatePublic_t *motor) {
-    motor->pole_pairs = motorParams.pole_pairs;
-    motor->bemf_constant = motorParams.bemf_constant;
-    motor->speed = 0;
-    motor->max_speed_rpm = motorParams.max_speed_rpm;
-    motor->phase_resistance = motorParams.phase_resistance;
-    motor->phase_inductance = motorParams.phase_inductance;
-    motor->flux_linkage = motorParams.flux_linkage;
-    
-    motor->phase_current_limit = motorParams.phase_current_max_normal;
-    motor->regen_max_current = motorParams.regen_max_current;
-    motor->field_weakening_current_max = motorParams.field_weakening_current_max;
-
-    // Si tienes flags como disable_auto_detect en MotorStatePublic_t, agrégalos aquí
-    // motor->disable_auto_detect = motorParams.disable_auto_detect;
-
-    // Otros parámetros que desees copiar...
-}
