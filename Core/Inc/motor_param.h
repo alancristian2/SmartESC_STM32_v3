@@ -1,7 +1,7 @@
 #ifndef MOTOR_PARAM_H
 #define MOTOR_PARAM_H
 
-#include <stdint.h>
+#include "config.h"
 
 typedef struct {
     int pole_pairs;
@@ -25,7 +25,8 @@ typedef struct {
 } MotorParams_t;
 
 extern MotorParams_t motorParams;
-
 extern const uint8_t hall_table[8];
+
+void motor_load_default_params(MotorStatePublic_t *motor);
 
 #endif
