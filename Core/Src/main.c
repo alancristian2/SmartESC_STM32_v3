@@ -73,19 +73,14 @@ void UserSysTickHandler(void) {
  * Enable DMA controller clock
  */
 static void DMA_Init(void) {
-
-  /* DMA controller clock enable */
   __HAL_RCC_DMA1_CLK_ENABLE();
 
-  // DMA channel 3: used for USART3_RX
   HAL_NVIC_SetPriority(DMA1_Channel3_IRQn, 3, 0);
   HAL_NVIC_EnableIRQ(DMA1_Channel3_IRQn);
 
-  // DMA channel 4: used for USART1_TX
   HAL_NVIC_SetPriority(DMA1_Channel4_IRQn, 3, 0);
   HAL_NVIC_EnableIRQ(DMA1_Channel4_IRQn);
 
-  // DMA channel 5: used for USART1_RX
   HAL_NVIC_SetPriority(DMA1_Channel5_IRQn, 3, 0);
   HAL_NVIC_EnableIRQ(DMA1_Channel5_IRQn);
 }
@@ -285,6 +280,12 @@ int main(void) {
   M365Dashboard_init(huart1);
   PWR_init();
 
+  // Variables estáticas para filtrado y control
+  static uint32_t systick_cnt_old = 0;
+  static uint8_t debug_cnt = 0;
+  static q31_t q31_batt_voltage_acc = 0;
+  static q31_t q31_current_acc = 0;
+
   while (1) {
     M365State.speed = MSPublic.speed;
 
@@ -294,9 +295,7 @@ int main(void) {
     MSPublic.i_q_setpoint_target = M365State.i_q_setpoint_target;
     MSPublic.brake_active = M365State.brake_active;
 
-    static uint32_t systick_cnt_old = 0;
-    if ((systick_cnt_old != systick_cnt) &&
-        (systick_cnt % 20) == 0) {
+    if ((systick_cnt_old != systick_cnt) && (systick_cnt % 20) == 0) {
       systick_cnt_old = systick_cnt;
 
       checkButton(&M365State);
@@ -304,22 +303,25 @@ int main(void) {
       MSPublic.mode = M365State.mode;
       MSPublic.speed_limit = M365State.speed_limit;
 
-      static q31_t q31_batt_voltage_acc = 0;
+      // Filtrado suave lectura voltaje batería
       q31_batt_voltage_acc -= (q31_batt_voltage_acc >> 7);
       q31_batt_voltage_acc += MSPublic.adcData[ADC_VOLTAGE];
-      q31_t q31_battery_voltage = (q31_batt_voltage_acc >> 7) * CAL_BAT_V;
+      float battery_voltage = (q31_batt_voltage_acc >> 7) * CAL_BAT_V;
+      MSPublic.battery_voltage = M365State.battery_voltage = battery_voltage;
 
-      MSPublic.battery_voltage = M365State.battery_voltage = q31_battery_voltage;
+      // Filtrado suave lectura corriente (asegúrate que ADC_CURRENT esté definido)
+      q31_current_acc -= (q31_current_acc >> 7);
+      q31_current_acc += MSPublic.adcData[ADC_CURRENT];
+      float current_amps = (q31_current_acc >> 7) * CAL_I;
 
       if (M365State.shutdown)
         M365State.shutdown++;
 
       M365State.temperature = (MSPublic.adcData[ADC_TEMP] * 41) >> 8;
 
-      static uint8_t debug_cnt = 0;
       if (++debug_cnt > 13) {
         debug_cnt = 0;
-        printf_("%d, %d\n", MSPublic.debug[0], MSPublic.debug[1] * CAL_I);
+        printf_("%d, %.2f\n", MSPublic.debug[0], current_amps);
       }
     }
   }
