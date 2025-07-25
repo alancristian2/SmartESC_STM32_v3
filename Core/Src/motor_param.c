@@ -1,17 +1,19 @@
 #include "motor_param.h"
+#include "motor.h"  // para MotorStatePublic_t
 
-// Tabla estados Hall (igual que en hall_sensor.c)
+// Tabla de estados para sensores Hall (3 sensores)
 const uint8_t hall_table[8] = {
-    0,  // 000 - inválido
+    0,  // 000 - no válido
     5,  // 001
     3,  // 010
     6,  // 011
     1,  // 100
     4,  // 101
     2,  // 110
-    0   // 111 - inválido
+    0   // 111 - no válido
 };
 
+// Parámetros motor Pro 4 (40 imanes, 20 pares de polos)
 MotorParams_t motorParams = {
     .pole_pairs = 20,
     .bemf_constant = 42.0f,
@@ -33,3 +35,20 @@ MotorParams_t motorParams = {
     .phase_inductance = 0.00018f,
     .flux_linkage = 0.023f
 };
+
+// Carga parámetros fijos en la estructura del motor
+void motor_load_default_params(MotorStatePublic_t *motor) {
+    motor->pole_pairs = motorParams.pole_pairs;
+    motor->bemf_constant = motorParams.bemf_constant;
+    motor->speed = 0;
+    motor->max_speed_rpm = motorParams.max_speed_rpm;
+    motor->phase_resistance = motorParams.phase_resistance;
+    motor->phase_inductance = motorParams.phase_inductance;
+    motor->flux_linkage = motorParams.flux_linkage;
+    
+    motor->phase_current_limit = motorParams.phase_current_max_normal;
+    motor->regen_max_current = motorParams.regen_max_current;
+    motor->field_weakening_current_max = motorParams.field_weakening_current_max;
+
+    // Otros parámetros si hace falta
+}
