@@ -58,4 +58,4 @@
 #define BEMF_CONSTANT 42.0
 
 // Desactivar autodetección parámetros motor (0 = activar, 1 = desactivar)
-#define DISABLE_AUTO_DETECT 0
+#define DISABLE_AUTO_DETECT 1
