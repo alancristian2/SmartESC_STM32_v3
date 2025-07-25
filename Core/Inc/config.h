@@ -30,6 +30,7 @@
 #define ADC_VOLTAGE              0
 #define ADC_THROTTLE             1
 #define ADC_TEMP                 2
+#define ADC_CURRENT              3   // Canal ADC para corriente
 
 // Pines GPIO originales Xiaomi Pro 2
 #define LED_Pin                  GPIO_PIN_1
