@@ -76,3 +76,6 @@
 
 // Desactivar autodetección parámetros motor (0 = activar, 1 = desactivar)
 #define DISABLE_AUTO_DETECT 1
+
+// config.h o en la parte superior de motor.c si no tienes config.h
+#define BATTERYVOLTAGE_MIN 30000  // ejemplo: 30.0 V si usas milivoltios
