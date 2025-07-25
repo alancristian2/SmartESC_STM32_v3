@@ -1,7 +1,8 @@
-#include "config.h"  // para BATTERYVOLTAGE_MIN y otras definiciones
+#include "config.h"         // Para constantes y definiciones
 #include "motor.h"
 #include "motor_param.h"
 #include "print.h"
+#include <stdbool.h>        // Para tipo bool
 
 static int motor_initialized = 0;
 
@@ -15,7 +16,7 @@ void motor_init(MotorStatePublic_t *motor) {
         motor->phase_inductance = motorParams.phase_inductance;
         motor->flux_linkage = motorParams.flux_linkage;
     } else {
-        // Aquí se pondría la autodetección real si estuviera habilitada
+        // Parámetros por defecto si autodetección no está desactivada
         motor->pole_pairs = POLE_PAIRS;
         motor->bemf_constant = BEMF_CONSTANT;
         motor->phase_resistance = 0.110f;
@@ -40,16 +41,20 @@ void motor_init(MotorStatePublic_t *motor) {
 }
 
 void motor_disable_pwm(void) {
-    // Aquí apagarías las señales PWM para detener el motor
+    // TODO: Implementar apagar señales PWM para detener motor
+    // Ejemplo:
+    // HAL_TIM_PWM_Stop(&htimX, TIM_CHANNEL_Y);
 }
 
 void motor_slow_loop(MotorStatePublic_t *motor) {
     // Control periódico a 10ms
 
-    if (motor->speed > motor->speed_limit * 1000) { // ajustar escala si hace falta
+    // Si velocidad supera el límite, cortar torque
+    if (motor->speed > motor->speed_limit * 1000) { // Ajustar escala si necesario
         motor->i_q_setpoint_target = 0;
     }
 
+    // Ajuste corriente máxima según modo
     switch (motor->mode) {
         case 0:
             motor->phase_current_limit = PH_CURRENT_MAX_ECO;
@@ -65,10 +70,10 @@ void motor_slow_loop(MotorStatePublic_t *motor) {
             break;
     }
 
-    // TODO: aquí va el control FOC real
+    // Aquí debería ir el control FOC real y demás lógicas
 }
 
 void motor_auto_detect(MotorStatePublic_t *motor) {
     // Función deshabilitada intencionalmente
-    // Usamos parámetros fijos
+    // Parámetros fijos usados siempre
 }
