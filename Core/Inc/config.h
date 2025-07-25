@@ -91,4 +91,6 @@
 #define CAL_BAT_V                0.0325f   // Factor para convertir lectura ADC a voltios reales
 #define CAL_I                    0.0088f   // Factor para convertir lectura ADC a amperios reales
 
+#define BATTERYVOLTAGE_MAX  44000
+
 #endif // CONFIG_H
