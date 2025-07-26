@@ -3,16 +3,14 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "main.h"
-#include "motor.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 // parámetros para cálculo de velocidad
-// Ahora definidos en main.h:
 // #define WHEEL_CIRCUMFERENCE 822 // mm para rueda de 10,3 pulgadas
-// #define GEAR_RATIO 1            // transmisión directa (rueda-motor)
+// #define GEAR_RATIO 15 // 15 para motor original M365
 
 // Canales ADC para medir corrientes
 #define ADC_CHANA 3
@@ -69,7 +67,6 @@ extern "C" {
 #define HALL_3_Pin GPIO_PIN_0
 #define HALL_3_GPIO_Port GPIOB
 
-// Estado público del motor
 typedef struct {
   q31_t i_q_setpoint_target;
   int16_t phase_current_limit;
@@ -85,15 +82,13 @@ typedef struct {
   bool brake_active;
   bool field_weakening_enable;
   uint32_t debug[10];
-} MotorStatePublic_t;
+// } MotorStatePublic_t;
 
-// Estimación de ángulo
-enum angle_estimation {
+// enum angle_estimation {
   EXTRAPOLATION,
   SPEED_PLL,
 };
 
-// Modos de control
 enum {
   Stop,
   SixStep,
@@ -101,8 +96,7 @@ enum {
   PLL
 };
 
-// Estados de error
-enum errors {
+// enum errors {
   none = 0,
   hall = 18,
   lowbattery = 24,
@@ -110,11 +104,10 @@ enum errors {
   brake = 15
 };
 
-// Prototipos de funciones
-void motor_init(MotorStatePublic_t* p_MotorStatePublic);
-void motor_autodetect(void);
-void motor_slow_loop(MotorStatePublic_t* p_MotorStatePublic);
-void motor_disable_pwm(void);
+// void motor_init(MotorStatePublic_t* p_MotorStatePublic);
+// void motor_autodetect();
+// void motor_slow_loop(MotorStatePublic_t* p_MotorStatePublic);
+// void motor_disable_pwm();
 
 #ifdef __cplusplus
 }
