@@ -9,8 +9,8 @@ extern "C" {
 #endif
 
 // parámetros para cálculo de velocidad
-#define WHEEL_CIRCUMFERENCE 822 // mm para rueda de 10,3 pulgadas
-#define GEAR_RATIO 1 // 15 para motor original M365
+// #define WHEEL_CIRCUMFERENCE 822 // mm para rueda de 10,3 pulgadas
+// #define GEAR_RATIO 15 // 15 para motor original M365
 
 // Canales ADC para medir corrientes
 #define ADC_CHANA 3
@@ -82,9 +82,9 @@ typedef struct {
   bool brake_active;
   bool field_weakening_enable;
   uint32_t debug[10];
-} MotorStatePublic_t;
+// } MotorStatePublic_t;
 
-enum angle_estimation {
+// enum angle_estimation {
   EXTRAPOLATION,
   SPEED_PLL,
 };
@@ -96,7 +96,7 @@ enum {
   PLL
 };
 
-enum errors {
+// enum errors {
   none = 0,
   hall = 18,
   lowbattery = 24,
@@ -104,10 +104,10 @@ enum errors {
   brake = 15
 };
 
-void motor_init(MotorStatePublic_t* p_MotorStatePublic);
+// void motor_init(MotorStatePublic_t* p_MotorStatePublic);
 // void motor_autodetect();
-void motor_slow_loop(MotorStatePublic_t* p_MotorStatePublic);
-void motor_disable_pwm();
+// void motor_slow_loop(MotorStatePublic_t* p_MotorStatePublic);
+// void motor_disable_pwm();
 
 #ifdef __cplusplus
 }
