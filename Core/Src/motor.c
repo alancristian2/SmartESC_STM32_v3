@@ -105,12 +105,12 @@ int8_t i8_recent_rotor_direction = 1;
 int16_t i16_hall_order = 1;
 
 // rotor angle scaled from degree to q31 for arm_math. -180°-->-2^31, 0°-->0, +180°-->+2^31 read in from EEPROM
-q31_t Hall_13 = 0;
-q31_t Hall_32 = 0;
-q31_t Hall_26 = 0;
-q31_t Hall_64 = 0;
-q31_t Hall_51 = 0;
-q31_t Hall_45 = 0;
+q31_t Hall_45 =  536870880;   // +45°
+q31_t Hall_51 = -536870880;   // -45°, invertido sensor central
+q31_t Hall_13 = 1073741760;   // +90°
+q31_t Hall_32 = 1610612640;   // +135° (90 + 45)
+q31_t Hall_26 = 2147483647;   // +180°
+q31_t Hall_64 = -1610612640;  // -135°
 
 const q31_t deg_30 = 357913941;
 
