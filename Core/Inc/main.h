@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "main.h"
+#include "motor.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -67,41 +68,6 @@ extern "C" {
 #define HALL_3_Pin GPIO_PIN_0
 #define HALL_3_GPIO_Port GPIOB
 
-typedef struct {
-  q31_t i_q_setpoint_target;
-  int16_t phase_current_limit;
-  q31_t battery_voltage;
-  q31_t battery_voltage_min;
-  uint16_t field_weakening_current_max;
-  int8_t system_state;
-  int8_t mode;
-  int8_t error_state;
-  uint16_t adcData[6]; // buffer para entradas ADC1
-  int8_t speed_limit;
-  uint32_t speed;
-  bool brake_active;
-  bool field_weakening_enable;
-  uint32_t debug[10];
-// } MotorStatePublic_t;
-
-// enum angle_estimation {
-  EXTRAPOLATION,
-  SPEED_PLL,
-};
-
-enum {
-  Stop,
-  SixStep,
-  Interpolation,
-  PLL
-};
-
-// enum errors {
-  none = 0,
-  hall = 18,
-  lowbattery = 24,
-  overcurrent = 4,
-  brake = 15
 };
 
 // void motor_init(MotorStatePublic_t* p_MotorStatePublic);
