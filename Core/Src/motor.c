@@ -8,6 +8,8 @@
 
 extern void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 
+#define POLE_PAIRS 20
+#define ANGLE_60_ELEC ((q31_t)((60.0f / 360.0f) * (1 << 16))) // 60 grados eléctricos en Q31 (valor Q16.16)
 #define TRIGGER_OFFSET_ADC 50
 #define TRIGGER_DEFAULT 2020
 #define _T 2028
