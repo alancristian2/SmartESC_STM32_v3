@@ -44,6 +44,7 @@ Core/Src/motor_param.c \
 Core/Src/main.c \
 Core/Src/utils.c \
 Core/Src/eeprom.c \
+Core/Src/hall_eeprom.c \
 Core/Src/decr_and_flash.c \
 Core/Src/button_processing.c \
 Core/Src/M365_Dashboard.c \
