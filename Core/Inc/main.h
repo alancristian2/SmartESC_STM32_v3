@@ -1,111 +1,114 @@
-/* USER CODE BEGIN Header */
-/**
-  ******************************************************************************
-  * @file           : main.h
-  * @brief          : Header for main.c file.
-  *                   This file contains the common defines of the application.
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2021 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under Ultimate Liberty license
-  * SLA0044, the "License"; You may not use this file except in compliance with
-  * the License. You may obtain a copy of the License at:
-  *                             www.st.com/SLA0044
-  *
-  ******************************************************************************
-  */
-/* USER CODE END Header */
+#pragma once
 
-#ifndef __MAIN_H
-#define __MAIN_H
+#include <stdlib.h>
+#include <stdbool.h>
+#include "main.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/* Includes ------------------------------------------------------------------*/
-#include "stm32f1xx_hal.h"
+// parámetros para cálculo de velocidad
+#define WHEEL_CIRCUMFERENCE 822 // mm para rueda de 10,3 pulgadas
+#define GEAR_RATIO 1 // 15 para motor original M365
 
-/* Exported types ------------------------------------------------------------*/
-/* USER CODE BEGIN ET */
-extern UART_HandleTypeDef huart1;
-extern UART_HandleTypeDef huart3;
-extern DMA_HandleTypeDef hdma_usart1_rx;
-extern DMA_HandleTypeDef hdma_usart1_tx;
-extern DMA_HandleTypeDef hdma_usart3_tx;
-extern DMA_HandleTypeDef hdma_usart3_rx;
-/* USER CODE END ET */
+// Canales ADC para medir corrientes
+#define ADC_CHANA 3
+#define ADC_CHANB 4
+#define ADC_CHANC 5
 
-/* Exported constants --------------------------------------------------------*/
-/* Exported macro ------------------------------------------------------------*/
+// Canal ADC para medir tensión de batería
+#define ADC_VOLTAGE 0
 
-/* Exported functions prototypes ---------------------------------------------*/
-void Error_Handler(void);
-void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
+// factores de calibración para tensión y corriente
+#define CAL_BAT_V 13 	// ADC counts * CAL_BAT_V = tensión batería en mV
 
-/* Private defines -----------------------------------------------------------*/
-#define PWR_BTN_Pin GPIO_PIN_14
-#define PWR_BTN_GPIO_Port GPIOC
-#define TPS_ENA_Pin GPIO_PIN_15
-#define TPS_ENA_GPIO_Port GPIOC
-#define LED_Pin GPIO_PIN_1
-#define LED_GPIO_Port GPIOD
-#define M1_TEMPERATURE_Pin GPIO_PIN_0
-#define M1_TEMPERATURE_GPIO_Port GPIOA
-#define M1_BUS_VOLTAGE_Pin GPIO_PIN_2
-#define M1_BUS_VOLTAGE_GPIO_Port GPIOA
-#define M1_CURR_AMPL_U_Pin GPIO_PIN_3
-#define M1_CURR_AMPL_U_GPIO_Port GPIOA
-#define M1_CURR_AMPL_V_Pin GPIO_PIN_4
-#define M1_CURR_AMPL_V_GPIO_Port GPIOA
-#define M1_CURR_AMPL_W_Pin GPIO_PIN_5
-#define M1_CURR_AMPL_W_GPIO_Port GPIOA
-#define PHASE_A_V_Pin GPIO_PIN_6
-#define PHASE_A_V_GPIO_Port GPIOA
-#define PHASE_B_V_Pin GPIO_PIN_7
-#define PHASE_B_V_GPIO_Port GPIOA
-#define M1_HALL_H3_Pin GPIO_PIN_0
-#define M1_HALL_H3_GPIO_Port GPIOB
-#define PHASE_C_V_Pin GPIO_PIN_1
-#define PHASE_C_V_GPIO_Port GPIOB
-#define UART_TX_Pin GPIO_PIN_10
-#define UART_TX_GPIO_Port GPIOB
-#define UART_RX_Pin GPIO_PIN_11
-#define UART_RX_GPIO_Port GPIOB
-#define M1_PWM_UL_Pin GPIO_PIN_13
-#define M1_PWM_UL_GPIO_Port GPIOB
-#define M1_PWM_VL_Pin GPIO_PIN_14
-#define M1_PWM_VL_GPIO_Port GPIOB
-#define M1_PWM_WL_Pin GPIO_PIN_15
-#define M1_PWM_WL_GPIO_Port GPIOB
-#define M1_PWM_UH_Pin GPIO_PIN_8
-#define M1_PWM_UH_GPIO_Port GPIOA
-#define M1_PWM_VH_Pin GPIO_PIN_9
-#define M1_PWM_VH_GPIO_Port GPIOA
-#define M1_PWM_WH_Pin GPIO_PIN_10
-#define M1_PWM_WH_GPIO_Port GPIOA
-#define BRAKE_LIGHT_Pin GPIO_PIN_15
-#define BRAKE_LIGHT_GPIO_Port GPIOA
-#define M1_HALL_H1_Pin GPIO_PIN_4
-#define M1_HALL_H1_GPIO_Port GPIOB
-#define M1_HALL_H2_Pin GPIO_PIN_5
-#define M1_HALL_H2_GPIO_Port GPIOB
+// límites de tensión de batería en mV
+#define BATTERYVOLTAGE_MIN 33000
+#define BATTERYVOLTAGE_MAX 42000
 
-/* USER CODE BEGIN Private defines */
-#define Phase_Current_1_Pin M1_CURR_AMPL_U_Pin
-#define Phase_Current_2_Pin M1_CURR_AMPL_V_Pin
-#define Phase_Current_3_Pin M1_CURR_AMPL_W_Pin
+#define CAL_I 38 // ADC counts * CAL_I = corriente en mA
 
-#define HALL_1_Pin M1_HALL_H1_Pin
-#define HALL_2_Pin M1_HALL_H2_Pin
-#define HALL_3_Pin M1_HALL_H3_Pin
-/* USER CODE END Private defines */
+// corrientes máximas en mA
+#define BATTERYCURRENT_MAX 10000 // 10A, 36V batería, 350W límite
+#define REGEN_CURRENT_MAX 6000
+
+#define P_FACTOR_I_Q 100
+#define I_FACTOR_I_Q 2
+#define P_FACTOR_I_D 100
+#define I_FACTOR_I_D 10
+#define MAX_D_FACTOR 1
+
+#define SPEEDFILTER 3
+#define SPEC_ANGLE -167026406L
+#define REVERSE 1 // 1 para motor original M365
+
+// Parámetros PLL motor
+#define P_FACTOR_PLL 8
+#define I_FACTOR_PLL 8
+#define SIXSTEPTHRESHOLD 9000
+
+// Pines de corriente de fase
+#define Phase_Current_1_Pin GPIO_PIN_3
+#define Phase_Current_1_GPIO_Port GPIOA
+#define Phase_Current_2_Pin GPIO_PIN_4
+#define Phase_Current_2_GPIO_Port GPIOA
+#define Phase_Current_3_Pin GPIO_PIN_5
+#define Phase_Current_3_GPIO_Port GPIOA
+
+#define Batt_Voltage_Pin GPIO_PIN_2
+#define Batt_Voltage_GPIO_Port GPIOA
+
+// Pines sensores Hall
+#define HALL_1_Pin GPIO_PIN_4
+#define HALL_1_GPIO_Port GPIOB
+#define HALL_2_Pin GPIO_PIN_5
+#define HALL_2_GPIO_Port GPIOB
+#define HALL_3_Pin GPIO_PIN_0
+#define HALL_3_GPIO_Port GPIOB
+
+typedef struct {
+  q31_t i_q_setpoint_target;
+  int16_t phase_current_limit;
+  q31_t battery_voltage;
+  q31_t battery_voltage_min;
+  uint16_t field_weakening_current_max;
+  int8_t system_state;
+  int8_t mode;
+  int8_t error_state;
+  uint16_t adcData[6]; // buffer para entradas ADC1
+  int8_t speed_limit;
+  uint32_t speed;
+  bool brake_active;
+  bool field_weakening_enable;
+  uint32_t debug[10];
+} MotorStatePublic_t;
+
+enum angle_estimation {
+  EXTRAPOLATION,
+  SPEED_PLL,
+};
+
+enum {
+  Stop,
+  SixStep,
+  Interpolation,
+  PLL
+};
+
+enum errors {
+  none = 0,
+  hall = 18,
+  lowbattery = 24,
+  overcurrent = 4,
+  brake = 15
+};
+
+void motor_init(MotorStatePublic_t* p_MotorStatePublic);
+// void motor_autodetect();
+void motor_slow_loop(MotorStatePublic_t* p_MotorStatePublic);
+void motor_disable_pwm();
 
 #ifdef __cplusplus
 }
 #endif
-
-#endif /* __MAIN_H */
