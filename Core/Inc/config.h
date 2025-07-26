@@ -72,25 +72,27 @@
 
 // Configuración sensores Hall (separados diente y medio, hall central invertido)
 #define HALL_SENSOR_OFFSET_1     60      // Primer sensor hall a 60°
-#define HALL_SENSOR_OFFSET_2     150     // Segundo sensor hall a 150° (60 + 90)
+#define HALL_SENSOR_OFFSET_2     150     // Segundo sensor hall a 150° (60 + 90°)
 #define HALL_SENSOR_INVERT_C     1       // Invertir sensor hall central (C)
 
 // Velocidad nominal máxima (RPM)
 #define MAX_RATED_SPEED          3000
 
 // Constante BEMF aproximada para motor Pro 4 (V/krpm)
-#define BEMF_CONSTANT            42.0f
+// #define BEMF_CONSTANT            42.0f
 
 // Desactivar autodetección parámetros motor (0 = activar, 1 = desactivar)
 #define DISABLE_AUTO_DETECT      1
 
 // Voltaje mínimo batería (milivoltios) - ajustar a valor real batería 10S
-#define BATTERYVOLTAGE_MIN       41000  // 41.0 V (41000 mV)
+// #define BATTERYVOLTAGE_MIN       41000  // 41.0 V (41000 mV)
+
+// Voltaje máximo batería (milivoltios)
+// #define BATTERYVOLTAGE_MAX       44000  // 44.0 V (44000 mV)
 
 // Valores de calibración para ADC (factor para convertir lectura ADC a valores reales)
-#define CAL_BAT_V                0.0325f   // Factor para convertir lectura ADC a voltios reales
-#define CAL_I                    0.0088f   // Factor para convertir lectura ADC a amperios reales
-
-#define BATTERYVOLTAGE_MAX  44000
+// Ejemplo: voltage_real = ADC_counts * CAL_BAT_V
+// #define CAL_BAT_V                0.0325f   // Factor para convertir lectura ADC a voltios reales
+// #define CAL_I                    0.0088f   // Factor para convertir lectura ADC a amperios reales
 
 #endif // CONFIG_H
