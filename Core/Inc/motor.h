@@ -108,7 +108,7 @@ enum errors {
 };
 
 void motor_init(MotorStatePublic_t* p_MotorStatePublic);
-void motor_autodetect();
+// void motor_autodetect();
 void motor_slow_loop(MotorStatePublic_t* p_MotorStatePublic);
 void motor_disable_pwm();
 
