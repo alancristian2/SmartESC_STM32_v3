@@ -19,7 +19,6 @@
   */
 /* USER CODE END Header */
 
-/* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __MAIN_H
 #define __MAIN_H
 
@@ -29,12 +28,6 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f1xx_hal.h"
-#include "product.h"
-
-/* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
-#include "product.h"
-/* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
@@ -47,23 +40,11 @@ extern DMA_HandleTypeDef hdma_usart3_rx;
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
-/* USER CODE BEGIN EC */
-
-/* USER CODE END EC */
-
 /* Exported macro ------------------------------------------------------------*/
-/* USER CODE BEGIN EM */
-
-/* USER CODE END EM */
-
-void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
-
-/* USER CODE BEGIN EFP */
-
-/* USER CODE END EFP */
+void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 
 /* Private defines -----------------------------------------------------------*/
 #define PWR_BTN_Pin GPIO_PIN_14
@@ -114,7 +95,6 @@ void Error_Handler(void);
 #define M1_HALL_H2_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
-/* Alias para compatibilidad con stm32f1xx_hal_msp.c */
 #define Phase_Current_1_Pin M1_CURR_AMPL_U_Pin
 #define Phase_Current_2_Pin M1_CURR_AMPL_V_Pin
 #define Phase_Current_3_Pin M1_CURR_AMPL_W_Pin
@@ -129,5 +109,3 @@ void Error_Handler(void);
 #endif
 
 #endif /* __MAIN_H */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
