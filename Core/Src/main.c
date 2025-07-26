@@ -7,6 +7,8 @@
 #include "motor_param.h"
 #include "button_processing.h"
 #include "M365_Dashboard.h"
+#include "eeprom.h"            // <--- incluye eeprom
+#include <stdint.h>            // para tipos
 
 UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart3;
@@ -21,12 +23,37 @@ MotorStatePublic_t MSPublic;
 
 volatile uint32_t systick_cnt = 0;
 
+// Hall angles extern, asegúrate que están definidas en otro .c
+extern q31_t Hall_45;
+extern q31_t Hall_51;
+extern q31_t Hall_13;
+extern q31_t Hall_32;
+extern q31_t Hall_26;
+extern q31_t Hall_64;
+
+// Función para setear Hall a 1.5 dientes y central invertido
+void set_hall_angles_1_5_dientes_invertido(void) {
+    // Valores q31 aproximados para 1.5 dientes separación y sensor central invertido
+    // -180° --> -2^31, +180° --> 2^31
+    // Ajusta estos valores si quieres exactitud distinta
+
+    Hall_45 =  536870880;    // +45°
+    Hall_51 = -536870880;    // -45° (central invertido)
+    Hall_13 = 1073741760;    // +90°
+    Hall_32 = 1610612640;    // +135° (90 + 45)
+    Hall_26 = 2147483647;    // +180°
+    Hall_64 = -1610612640;   // -135°
+}
+
+// Prototipos funciones EEPROM (implementadas en otro archivo)
+void load_hall_angles_from_eeprom(void);
+void save_hall_angles_to_eeprom(void);
+
 // every 1ms
 void UserSysTickHandler(void) {
     static uint32_t c;
     systick_cnt++;
     c++;
-    // every 10ms
     if ((c % 10) == 0) {
         motor_slow_loop(&MSPublic);
     }
@@ -177,6 +204,13 @@ int main(void) {
     DMA_Init();
     USART1_UART_Init();
     USART3_UART_Init();
+
+    EE_Init();                           // <-- Inicializa EEPROM emulada
+    load_hall_angles_from_eeprom();     // <-- Carga valores Hall desde EEPROM
+
+    // Si quieres sobreescribir con valores 1.5 dientes + invertido, llama esto:
+    // set_hall_angles_1_5_dientes_invertido();
+    // save_hall_angles_to_eeprom();
 
     motor_load_default_params(&MSPublic);
     motor_init(&MSPublic);
